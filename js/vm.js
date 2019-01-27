@@ -1,7 +1,7 @@
 (function() {
     function assert(condition) {
         if (!condition) {
-            debugger;
+            debugger; // eslint-disable-line no-debugger
         }
     }
 
@@ -164,15 +164,15 @@
     VirtualMachine.prototype.perform = function(instr) {
         switch (instr >> 12) {
             case OPCODE_ADD: {
-                var dr = (instr >> 9) & 0b111;
-                var sr1 = (instr >> 6) & 0b111;
+                let dr = (instr >> 9) & 0b111;
+                let sr1 = (instr >> 6) & 0b111;
 
                 if (instr & (1 << 5)) {
-                    var imm5 = signExtend(instr, 5);
+                    let imm5 = signExtend(instr, 5);
                     this.reg[dr] = this.reg[sr1] + imm5;
                 }
                 else {
-                    var sr2 = instr & 0b111;
+                    let sr2 = instr & 0b111;
                     this.reg[dr] = this.reg[sr1] + this.reg[sr2];
                 }
 
@@ -181,15 +181,15 @@
             }
 
             case OPCODE_AND: {
-                var dr = (instr >> 9) & 0b111;
-                var sr1 = (instr >> 6) & 0b111;
+                let dr = (instr >> 9) & 0b111;
+                let sr1 = (instr >> 6) & 0b111;
 
                 if (instr & (1 << 5)) {
-                    var imm5 = signExtend(instr, 5);
+                    let imm5 = signExtend(instr, 5);
                     this.reg[dr] = this.reg[sr1] & imm5;
                 }
                 else {
-                    var sr2 = instr & 0b111;
+                    let sr2 = instr & 0b111;
                     this.reg[dr] = this.reg[sr1] & this.reg[sr2];
                 }
 
@@ -198,11 +198,11 @@
             }
 
             case OPCODE_BR: {
-                var current_nzp = this.reg[REG_PSR] & 0b111;
-                var desired_nzp = (instr >> 9) & 0b111;
+                let current_nzp = this.reg[REG_PSR] & 0b111;
+                let desired_nzp = (instr >> 9) & 0b111;
 
                 if (current_nzp & desired_nzp) {
-                    var pc_offset9 = signExtend(instr, 9);
+                    let pc_offset9 = signExtend(instr, 9);
                     this.reg[REG_PC] += pc_offset9;
                 }
 
@@ -210,7 +210,7 @@
             }
 
             case OPCODE_JMP: {
-                var baser = (instr >> 6) & 0b111;
+                let baser = (instr >> 6) & 0b111;
                 this.reg[REG_PC] = this.reg[baser];
                 break;
             }
@@ -219,11 +219,11 @@
                 this.reg[7] = this.reg[REG_PC];
 
                 if (instr & (1 << 11)) {
-                    var pc_offset11 = signExtend(instr, 11);
+                    let pc_offset11 = signExtend(instr, 11);
                     this.reg[REG_PC] += pc_offset11;
                 }
                 else {
-                    var baser = (instr >> 6) & 0b111;
+                    let baser = (instr >> 6) & 0b111;
                     this.reg[REG_PC] = this.reg[baser];
                 }
 
@@ -231,8 +231,8 @@
             }
 
             case OPCODE_LD: {
-                var dr = (instr >> 9) & 0b111;
-                var pc_offset9 = signExtend(instr, 9);
+                let dr = (instr >> 9) & 0b111;
+                let pc_offset9 = signExtend(instr, 9);
 
                 this.reg[dr] = this.read(this.reg[REG_PC] + pc_offset9);
 
@@ -241,8 +241,8 @@
             }
 
             case OPCODE_LDI: {
-                var dr = (instr >> 9) & 0b111;
-                var pc_offset9 = signExtend(instr, 9);
+                let dr = (instr >> 9) & 0b111;
+                let pc_offset9 = signExtend(instr, 9);
 
                 this.reg[dr] = this.read(this.read(this.reg[REG_PC] + pc_offset9));
 
@@ -251,9 +251,9 @@
             }
 
             case OPCODE_LDR: {
-                var dr = (instr >> 9) & 0b111;
-                var baser = (instr >> 6) & 0b111;
-                var offset6 = signExtend(instr, 6);
+                let dr = (instr >> 9) & 0b111;
+                let baser = (instr >> 6) & 0b111;
+                let offset6 = signExtend(instr, 6);
 
                 this.reg[dr] = this.read(this.reg[baser] + offset6);
 
@@ -262,8 +262,8 @@
             }
 
             case OPCODE_LEA: {
-                var dr = (instr >> 9) & 0b111;
-                var pc_offset9 = signExtend(instr, 9);
+                let dr = (instr >> 9) & 0b111;
+                let pc_offset9 = signExtend(instr, 9);
 
                 this.reg[dr] = this.reg[REG_PC] + pc_offset9;
 
@@ -272,8 +272,8 @@
             }
 
             case OPCODE_NOT: {
-                var dr = (instr >> 9) & 0b111;
-                var sr = (instr >> 6) & 0b111;
+                let dr = (instr >> 9) & 0b111;
+                let sr = (instr >> 6) & 0b111;
 
                 this.reg[dr] = ~this.reg[sr];
 
@@ -286,8 +286,8 @@
             }
 
             case OPCODE_ST: {
-                var sr = (instr >> 9) & 0b111;
-                var pc_offset9 = signExtend(instr, 9);
+                let sr = (instr >> 9) & 0b111;
+                let pc_offset9 = signExtend(instr, 9);
 
                 this.write(this.reg[REG_PC] + pc_offset9, this.reg[sr]);
 
@@ -295,8 +295,8 @@
             }
 
             case OPCODE_STI: {
-                var sr = (instr >> 9) & 0b111;
-                var pc_offset9 = signExtend(instr, 9);
+                let sr = (instr >> 9) & 0b111;
+                let pc_offset9 = signExtend(instr, 9);
 
                 this.write(this.read(this.reg[REG_PC] + pc_offset9), this.reg[sr]);
 
@@ -304,9 +304,9 @@
             }
 
             case OPCODE_STR: {
-                var sr = (instr >> 9) & 0b111;
-                var baser = (instr >> 6) & 0b111;
-                var offset6 = signExtend(instr, 6);
+                let sr = (instr >> 9) & 0b111;
+                let baser = (instr >> 6) & 0b111;
+                let offset6 = signExtend(instr, 6);
 
                 this.write(this.reg[baser] + offset6, this.reg[sr]);
 
@@ -314,7 +314,7 @@
             }
 
             case OPCODE_TRAP: {
-                var trapvect8 = instr & 0xff;
+                let trapvect8 = instr & 0xff;
 
                 if (trapvect8 == 0x20) {
                     // handle GETC efficiently to prevent high CPU usage when idle
@@ -335,7 +335,7 @@
             }
 
             case OPCODE_RESERVED:
-                return OPCODE_NOT_IMPLEMENTED;
+                return EXIT_OPCODE_NOT_IMPLEMENTED;
         }
 
         return EXIT_SUCCESS;
@@ -373,21 +373,21 @@
             this.retryAfterInterrupt = false;
             this.schedule();
         }
-    }
+    };
 
     // MARK: - I/O Placeholders
 
     VirtualMachine.prototype.putChar = function(val) {
-        console.log(val);
-    }
+        console.log(val); // eslint-disable-line no-console
+    };
 
     VirtualMachine.prototype.hasChar = function() {
         return false;
-    }
+    };
 
     VirtualMachine.prototype.getChar = function() {
         return 0;
-    }
+    };
 
     // MARK: - Exports
 

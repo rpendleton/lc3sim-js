@@ -27,7 +27,7 @@
 
     var availableKeys = [];
 
-    term.on('key', function(char, e) {
+    term.on('key', function(char, e) { // eslint-disable-line no-unused-vars
         if (char === '\r') char = '\n';
 
         availableKeys.push(char.charCodeAt(0));
