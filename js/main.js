@@ -1,10 +1,9 @@
 (function() {
     var vm = new VirtualMachine();
-    vm.loadOS();
-    vm.loadData(lc3_2048);
 
     var term = new Terminal();
     term.open(document.getElementById('terminal'));
+    term.write('Choose a game to begin.\r\n');
 
     // MARK: - display
 
@@ -39,8 +38,19 @@
         }
     };
 
-    // MARK: - start
+    // MARK: - loading
 
-    vm.schedule();
-    term.focus();
+    function restartAndLoad(program) {
+        term.clear();
+        term.focus();
+
+        vm.reset();
+        availableKeys = [];
+
+        vm.loadOS();
+        vm.loadData(program);
+        vm.schedule();
+    }
+
+    window.restartAndLoad = restartAndLoad;
 })();

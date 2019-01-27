@@ -76,6 +76,10 @@
     // MARK: - Creation
 
     function VirtualMachine() {
+        this.reset();
+    }
+
+    VirtualMachine.prototype.reset = function() {
         this.mem = new Uint16Array(ADDR_MAX + 1);
         this.reg = new Uint16Array(REG_COUNT);
 
@@ -84,7 +88,12 @@
         this.mem[ADDR_MCR] = STATUS_BIT;
 
         this.retryAfterInterrupt = false;
-    }
+
+        if (this.animationFrameHandle !== undefined) {
+            window.cancelAnimationFrame(this.animationFrameHandle);
+            this.animationFrameHandle = undefined;
+        }
+    };
 
     // MARK: - Memory
 
@@ -356,7 +365,7 @@
     };
 
     VirtualMachine.prototype.schedule = function() {
-        window.requestAnimationFrame(() => this.step());
+        this.animationFrameHandle = window.requestAnimationFrame(() => this.step());
     };
 
     VirtualMachine.prototype.interrupt = function() {
