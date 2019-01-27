@@ -25,6 +25,7 @@
 
     term.on('key', function(key, e) {
         availableKeys.push(key.charCodeAt(0));
+        vm.interrupt();
     });
 
     vm.hasChar = function() {

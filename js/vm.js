@@ -11,6 +11,7 @@
     var EXIT_SUCCESS = true;
     var EXIT_INPUT_TOO_LARGE = -1;
     var EXIT_OPCODE_NOT_IMPLEMENTED = -2;
+    var EXIT_RETRY_AFTER_INTERRUPT = -3;
 
     var ADDR_INITIAL = 0x3000;
     var ADDR_KBSR = 0xfe00;
@@ -81,6 +82,8 @@
         this.reg[REG_PC] = ADDR_INITIAL;
         this.reg[REG_PSR] = FLAG_ZERO;
         this.mem[ADDR_MCR] = STATUS_BIT;
+
+        this.retryAfterInterrupt = false;
     }
 
     // MARK: - Memory
@@ -304,8 +307,20 @@
             case OPCODE_TRAP: {
                 var trapvect8 = instr & 0xff;
 
-                this.reg[7] = this.reg[REG_PC];
-                this.reg[REG_PC] = this.read(trapvect8);
+                if (trapvect8 == 0x20) {
+                    // handle GETC efficiently to prevent high CPU usage when idle
+                    if (this.hasChar()) {
+                        this.reg[0] = this.getChar();
+                    }
+                    else {
+                        return EXIT_RETRY_AFTER_INTERRUPT;
+                    }
+                }
+                else {
+                    // fallback to OS implementation of remaining traps
+                    this.reg[7] = this.reg[REG_PC];
+                    this.reg[REG_PC] = this.read(trapvect8);
+                }
 
                 break;
             }
@@ -327,7 +342,12 @@
             var instr = this.read(this.reg[REG_PC]++);
             var res = this.perform(instr);
 
-            if (res != EXIT_SUCCESS) {
+            if (res == EXIT_RETRY_AFTER_INTERRUPT) {
+                this.reg[REG_PC]--;
+                this.retryAfterInterrupt = true;
+                return;
+            }
+            else if (res != EXIT_SUCCESS) {
                 return;
             }
         }
@@ -338,6 +358,13 @@
     VirtualMachine.prototype.schedule = function() {
         window.requestAnimationFrame(() => this.step());
     };
+
+    VirtualMachine.prototype.interrupt = function() {
+        if (this.retryAfterInterrupt) {
+            this.retryAfterInterrupt = false;
+            this.schedule();
+        }
+    }
 
     // MARK: - I/O Placeholders
 
