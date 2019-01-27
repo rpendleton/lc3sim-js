@@ -7,11 +7,20 @@
 
     // MARK: - display
 
+    var pendingWrites = '';
+
     vm.putChar = function(val) {
         var char = String.fromCharCode(val);
         if (char === '\n') char = '\r\n';
 
-        term.write(char);
+        if (pendingWrites.length == 0) {
+            window.requestAnimationFrame(() => {
+                term.write(pendingWrites);
+                pendingWrites = [];
+            });
+        }
+
+        pendingWrites += char;
     };
 
     // MARK: - input
