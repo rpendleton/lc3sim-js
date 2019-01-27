@@ -9,22 +9,20 @@
     // MARK: - display
 
     vm.putChar = function(val) {
-        var s = String.fromCharCode(val);
+        var char = String.fromCharCode(val);
+        if (char === '\n') char = '\r\n';
 
-        if (s == '\n') {
-            term.write('\r\n');
-        }
-        else {
-            term.write(s);
-        }
+        term.write(char);
     };
 
     // MARK: - input
 
     var availableKeys = [];
 
-    term.on('key', function(key, e) {
-        availableKeys.push(key.charCodeAt(0));
+    term.on('key', function(char, e) {
+        if (char === '\r') char = '\n';
+
+        availableKeys.push(char.charCodeAt(0));
         vm.interrupt();
     });
 
