@@ -4,18 +4,51 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>LC3 Virtual Machine</title>
+    <title>LC-3 Virtual Machine</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.10.1/xterm.min.css" />
     <link rel="stylesheet" href="css/main.css" />
 </head>
 <body>
-    <div id="terminal"></div>
-    <div id="controls">
-        <button onclick="restartAndLoad(lc3_2048);">2048</button>
-        <button onclick="restartAndLoad(lc3_rogue);">Rogue</button>
+    <div id="container">
+        <div id="intro">
+            <h1>lc3sim-js</h1>
+            <p>lc3sim-js is a JavaScript implementation of the LC-3 virtual machine, an educational computer architecture.</p>
+        </div>
+
+        <div id="programs">
+            <h3>Programs</h3>
+            <p>Although lc3sim-js is capable of running any valid LC-3 program, this demo includes just two sample games:</p>
+            <p>
+                <button onclick="restartAndLoad(lc3_2048);">2048</button>
+                <button onclick="restartAndLoad(lc3_rogue);">Rogue</button>
+            </p>
+        </div>
+
+        <div id="terminal"></div>
+
+        <div id="controls">
+            <h3>Controls:</h3>
+            <p>Any keys that are pressed while the terminal is focused will be forwarded to the VM.</p>
+            <p>
+                On mobile (or devices with a touch screen), swiping on the terminal will simulate WASD key presses.
+                To send keys other than this, you can tap anywhere in the terminal to manually focus the terminal and open a keyboard.
+            </p>
+        </div>
+
+        <div id="more-information">
+            <h3>More Information</h3>
+            <p>Source code is available on GitHub at <a href="https://github.com/rpendleton/lc3sim-js">rpendleton/lc3sim-js</a>.</p>
+            <p>
+                This project is based on a tutorial written by my friend and me.
+                If you're interested in writing your own VM (or just want to learn more about the project), you can find the tutorial at
+                <a href="https://justinmeiners.github.io/lc3-vm">justinmeiners.github.io/lc3-vm</a>.
+            </p>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.10.1/xterm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.10.1/addons/fit/fit.min.js"></script>
 
     <script src="obj/lc3os.js"></script>
     <script src="obj/2048.js"></script>

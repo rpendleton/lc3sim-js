@@ -1,9 +1,17 @@
 (function() {
     var vm = new VirtualMachine();
 
-    var term = new Terminal();
+    Terminal.applyAddon(fit);
+
+    var term = new Terminal({
+        theme: {
+            background: '#1f1f1f'
+        }
+    });
+
     term.open(document.getElementById('terminal'));
     term.write('Choose a game to begin.\r\n');
+    term.fit();
 
     // MARK: - display
 
